@@ -1,4 +1,4 @@
-# German Dialect Normalization with LLMs 🇩🇪🤖
+# German Dialect Normalization with LLM
 
 This repository contains the evaluation codebase and datasets for an empirical NLP study on normalizing regional German dialects (Bavarian and Franconian) into Standard German using Large Language Models (LLMs) and In-Context Learning (ICL).
 
