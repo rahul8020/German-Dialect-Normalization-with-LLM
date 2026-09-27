@@ -1,0 +1,4 @@
+condition,bleu,wer,cer
+Baseline-0 (Identity),26.07,0.5804,0.2206
+Condition-A (Zero-Shot),49.97,0.2782,0.1892
+Condition-B (Few-Shot),59.76,0.1983,0.1337

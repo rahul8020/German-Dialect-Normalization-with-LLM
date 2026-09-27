@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+
+# Files specifically requested to be excluded from Git
+poster_draft.md
+appendix_draft.md
+12048.pdf
+package.ps1

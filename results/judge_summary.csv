@@ -1,0 +1,4 @@
+condition,mean_meaning_preservation,mean_fluency
+Baseline-0 (Identity),1.943,1.138
+Condition-A (Zero-Shot),3.752,4.586
+Condition-B (Few-Shot),4.01,4.6
