@@ -53,3 +53,22 @@ python evaluate.py
 ```
 
 *Note: The pipeline supports checkpointing. If interrupted by API rate limits, re-run with `python evaluate.py --load-checkpoints` to resume safely from the last saved state without regenerating existing data.*
+
+## Citations & Acknowledgments
+
+This project utilizes the multi-dialectal dataset for German dialects presented in:
+> Verena Blaschke, Miriam Winkler, Constantin Förster, Gabriele Wenger-Glemser, and Barbara Plank. "A multi-dialectal dataset for German dialect ASR and dialect-to-standard speech translation." *In Proc. Interspeech 2025*, p. 913–917. ISCA. [https://www.isca-archive.org/interspeech_2025/blaschke25_interspeech.html](https://www.isca-archive.org/interspeech_2025/blaschke25_interspeech.html)
+
+If you use the data or codebase from this repository, please cite:
+```bibtex
+@inproceedings{blaschke-etal-2025-multi,
+  title = {A Multi-Dialectal Dataset for {German} Dialect {ASR} and Dialect-to-Standard Speech Translation},
+  author = {Blaschke, Verena and Winkler, Miriam and Förster, Constantin and Wenger-Glemser, Gabriele and Plank, Barbara},
+  booktitle = {Interspeech 2025},
+  pages = {913--917},
+  url = {https://www.isca-archive.org/interspeech_2025/blaschke25_interspeech.html},
+  doi = {10.21437/Interspeech.2025-318},
+  year = {2025},
+  month = aug,
+}
+```
