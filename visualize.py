@@ -206,6 +206,16 @@ def plot_region_heatmap(
         "Condition-B (Few-Shot)":  "Few-Shot",
     }
     region_df = region_df.copy()
+    short_regions = {
+        "mittelfranken": "MFR",
+        "niederbayern": "NBY",
+        "oberbayern": "OBY",
+        "oberfranken": "OFR",
+        "oberpfalz": "OPF",
+        "schwaben": "SWB",
+        "unterfranken": "UFR",
+    }
+    region_df["region"] = region_df["region"].map(lambda r: short_regions.get(r, r))
     region_df["condition"] = region_df["condition"].map(
         lambda c: short_labels.get(c, c)
     )
