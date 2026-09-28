@@ -1,20 +1,3 @@
-"""
-metrics.py — Evaluation metrics for the ICL dialect normalisation study.
-
-Traditional metrics  (local, no API)
---------------------------------------
-  BLEU  : sacrebleu corpus-level BLEU (exp smoothing, lowercase)
-  WER   : jiwer Word Error Rate
-  CER   : jiwer Character Error Rate
-
-LLM-as-a-Judge  (Groq)
-----------------------------------------------
-  Scores each hypothesis on:
-    - Meaning Preservation  (1–5)
-    - Fluency               (1–5)
-  Uses JSON-mode output for reliable parsing.
-"""
-
 from __future__ import annotations
 
 import json
@@ -36,10 +19,6 @@ from config import (
 
 logger = logging.getLogger(__name__)
 
-
-# ---------------------------------------------------------------------------
-# Traditional metrics
-# ---------------------------------------------------------------------------
 
 def compute_bleu(hypotheses: List[str], references: List[str]) -> float:
     """Corpus-level BLEU (sacrebleu, lowercase, exp smoothing). Range 0–100."""
@@ -129,9 +108,8 @@ def compute_per_region(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-# ---------------------------------------------------------------------------
 # LLM-as-a-Judge  (Groq free model: qwen/qwen3.8-27b)
-# ---------------------------------------------------------------------------
+
 
 _JUDGE_SYSTEM = """\
 You are an expert evaluator for German language quality.

@@ -1,17 +1,3 @@
-"""
-visualize.py — Poster figures for the ICL dialect normalisation study.
-
-All figures target DIN A1 constraints:
-  - Exported at FIGURE_DPI >= 150 PPI  (config: 200 PPI)
-  - All text >= 24 pt
-
-Figures produced:
-  1. fig1_wer_by_condition   — bar chart: WER across 3 tiers (main result)
-  2. fig2_region_heatmap     — heatmap: WER per region × condition
-  3. fig3_radar              — radar: all 5 metrics across 3 conditions
-  4. fig4_wer_improvement    — waterfall/arrow: WER reduction B0 → A → B
-"""
-
 from __future__ import annotations
 
 import logging
@@ -31,9 +17,7 @@ from config import FIGURE_DPI, FIGURES_DIR
 
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Font / size constants  (all >= 24 pt for poster readability)
-# ---------------------------------------------------------------------------
+
 FONT_TITLE  = 34
 FONT_LABEL  = 28
 FONT_TICK   = 24
@@ -75,9 +59,8 @@ def _poster_theme() -> None:
     })
 
 
-# ---------------------------------------------------------------------------
-# Figure 1 — WER by condition  (main poster figure)
-# ---------------------------------------------------------------------------
+# Figure 1 — WER by condition 
+
 
 def plot_wer_by_condition(
     summary_df: pd.DataFrame,
@@ -184,9 +167,9 @@ def plot_wer_by_condition(
     return output_path
 
 
-# ---------------------------------------------------------------------------
+
 # Figure 2 — Per-region WER heatmap
-# ---------------------------------------------------------------------------
+
 
 def plot_region_heatmap(
     region_df: pd.DataFrame,
@@ -199,7 +182,7 @@ def plot_region_heatmap(
     output_path = Path(output_path or Path(FIGURES_DIR) / "fig2_region_heatmap.png")
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Shorten condition labels for heatmap
+   
     short_labels = {
         "Baseline-0 (Identity)":   "Baseline-0",
         "Condition-A (Zero-Shot)": "Zero-Shot",
@@ -258,9 +241,9 @@ def plot_region_heatmap(
     return output_path
 
 
-# ---------------------------------------------------------------------------
+
 # Figure 3 — Radar: all metrics across 3 conditions
-# ---------------------------------------------------------------------------
+
 
 def plot_radar(
     summary_df: pd.DataFrame,
@@ -321,9 +304,9 @@ def plot_radar(
     return output_path
 
 
-# ---------------------------------------------------------------------------
-# Figure 4 — WER improvement waterfall  (key research finding)
-# ---------------------------------------------------------------------------
+
+# Figure 4 — WER improvement waterfall 
+
 
 def plot_wer_improvement(
     summary_df: pd.DataFrame,
@@ -393,9 +376,9 @@ def plot_wer_improvement(
     return output_path
 
 
-# ---------------------------------------------------------------------------
+
 # Demo with synthetic data  (run: python visualize.py)
-# ---------------------------------------------------------------------------
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 

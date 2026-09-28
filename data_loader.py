@@ -5,7 +5,6 @@ Returns two splits per region:
   - example_pool  : first N_FEW_SHOT_EXAMPLES rows  (used as few-shot examples)
   - test_set      : next MAX_SENTENCES_PER_REGION rows  (evaluated in all tiers)
 
-This ensures zero leakage between few-shot examples and test sentences.
 """
 
 from __future__ import annotations

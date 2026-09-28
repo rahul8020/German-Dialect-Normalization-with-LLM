@@ -1,26 +1,3 @@
-"""
-conditions.py — The three experimental tiers for the ICL dialect study.
-
-Baseline-0  (Identity Control)
-    Returns the raw dialect string as the "hypothesis".
-    No model calls. Establishes the mathematical floor of lexical distance.
-    Expected: ~57% WER, ~24% CER.
-
-Condition-A  (Zero-Shot LLM)
-    Single instruction: "Translate this dialect into Standard German."
-    No examples. Tests the LLM's intrinsic sociolinguistic competence.
-
-Condition-B  (Few-Shot LLM / In-Context Learning)
-    Prepends N_FEW_SHOT_EXAMPLES dialect->standard pairs from the SAME REGION
-    before each test sentence. Tests whether in-context examples guide the
-    model toward the reference distribution.
-
-LLM Provider:
-    Qwen (qwen/qwen3.8-27b) via Groq API — https://console.groq.com
-    Free tier: 30 req/min, 14,400 req/day.
-    Install: pip install groq
-"""
-
 from __future__ import annotations
 
 import logging
@@ -87,10 +64,6 @@ def _format_examples(example_df: pd.DataFrame) -> str:
     return "\n\n".join(lines) + "\n"
 
 
-# ---------------------------------------------------------------------------
-# Groq client helper
-# ---------------------------------------------------------------------------
-
 def _get_groq_client():
     """Return an initialised Groq client."""
     try:
@@ -102,10 +75,7 @@ def _get_groq_client():
         )
     if not GROQ_API_KEY:
         raise ValueError(
-            "Groq API key not set!\n"
-            "  1. Go to https://console.groq.com\n"
-            "  2. Sign in -> 'API Keys' -> 'Create API Key'\n"
-            "  3. Set GROQ_API_KEY in config.py or via environment variable."
+            "Groq API key not set"
         )
     from groq import Groq
     return Groq(api_key=GROQ_API_KEY)
@@ -150,20 +120,20 @@ def _clean_output(text: str, fallback: str = "") -> str:
     if not clean_lines:
         return fallback
 
-    # Take only the first substantive line
+    # tke only the first substantive line
     result = clean_lines[0].strip()
 
-    # Strip surrounding quotes
+    # srip surrounding quotes
     result = re.sub(r'^["\u201c\u201e]|["\u201d\u201e]$', "", result).strip()
 
-    # Strip common prefixes that sneak through (case-insensitive)
+    # srip common prefixes that sneak through (case-insensitive)
     result = re.sub(
         r"^(Standard German|Hochdeutsch|Translation|Output|Answer|Result"
         r"|Draft Output|Draft|Normalized|Here is)[:\s]+",
         "", result, flags=re.I
     ).strip()
 
-    # Drop if the line still starts with a reasoning marker
+    # drop the line still starts with a reasoning marker
     if re.match(r"^Let'?s\s+(refine|think|review|check|verify)", result, re.I):
         return fallback
 
@@ -240,7 +210,7 @@ def run_identity(test_df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
-# Tier A — Zero-Shot LLM  (via Groq)
+# Tier A — Zero-Shot LLM  
 # ---------------------------------------------------------------------------
 
 def run_zero_shot(
@@ -279,7 +249,7 @@ def run_zero_shot(
 
 
 # ---------------------------------------------------------------------------
-# Tier B — Few-Shot LLM (In-Context Learning)  (via Groq)
+# Tier B — Few-Shot LLM (In-Context Learning)  
 # ---------------------------------------------------------------------------
 
 def run_few_shot(

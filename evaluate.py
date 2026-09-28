@@ -1,27 +1,3 @@
-"""
-evaluate.py — Main evaluation pipeline for the ICL dialect normalisation study.
-
-Pipeline:
-  1. Load data (example pool + test set)
-  2. Baseline-0 : identity control    (no API calls)
-  3. Condition-A : zero-shot Groq     (1 API call per sentence)
-  4. Condition-B : few-shot Groq      (1 API call per sentence, richer prompt)
-  5. Metrics     : WER / CER / BLEU   (local, no API)
-  6. LLM Judge   : Groq scores        (optional, --skip-judge to omit)
-  7. Figures     : 4 poster charts
-
-Checkpointing: each condition's sentence-level results are saved to CSV
-immediately after generation. If the run is interrupted, re-run with
---load-checkpoints to skip re-generating and jump to metrics/figures.
-
-Usage
------
-    python evaluate.py                          # full pipeline, all 7 regions
-    python evaluate.py --regions oberbayern     # single region (quick test)
-    python evaluate.py --skip-judge             # skip LLM judge (saves API quota)
-    python evaluate.py --load-checkpoints       # reload CSVs, skip generation
-"""
-
 from __future__ import annotations
 
 import argparse
@@ -99,17 +75,17 @@ def main(
     _ensure_dirs()
     regions = regions or REGIONS
 
-    # ── Step 1: Load data ──────────────────────────────────────────────────
+    # Step1: Load data 
     logger.info("=== Loading Betthupferl data ===")
     examples_df, test_df = load_all_regions(regions=regions)
     logger.info(
         "Example pool: %d rows | Test set: %d rows", len(examples_df), len(test_df)
     )
 
-    # ── Steps 2–4: Run conditions (or load from checkpoints) ───────────────
+    # Steps2–4: Run conditions 
     condition_dfs: dict[str, pd.DataFrame] = {}
 
-    # Baseline-0 (no API, always fast)
+    # Baseline-0
     key0 = "Baseline-0 (Identity)"
     _ck0 = _load_checkpoint(CONDITION_FILES[key0]) if load_checkpoints else None
     if _ck0 is not None:
@@ -119,7 +95,7 @@ def main(
         condition_dfs[key0] = run_identity(test_df)
         _save(condition_dfs[key0], CONDITION_FILES[key0])
 
-    # Condition-A: Zero-shot
+    # Condition-A zero shot
     keyA = "Condition-A (Zero-Shot)"
     _ckA = _load_checkpoint(CONDITION_FILES[keyA]) if load_checkpoints else None
     if _ckA is not None:
@@ -129,7 +105,7 @@ def main(
         condition_dfs[keyA] = run_zero_shot(test_df)
         _save(condition_dfs[keyA], CONDITION_FILES[keyA])
 
-    # Condition-B: Few-shot
+    # Condition-b few shot
     keyB = "Condition-B (Few-Shot)"
     _ckB = _load_checkpoint(CONDITION_FILES[keyB]) if load_checkpoints else None
     if _ckB is not None:
@@ -139,7 +115,7 @@ def main(
         condition_dfs[keyB] = run_few_shot(test_df, examples_df)
         _save(condition_dfs[keyB], CONDITION_FILES[keyB])
 
-    # ── Step 5: Traditional metrics ────────────────────────────────────────
+  
     logger.info("=== Computing traditional metrics ===")
     corpus_rows = []
     region_rows = []
@@ -158,7 +134,7 @@ def main(
     _save(corpus_metrics, "corpus_metrics.csv")
     _save(region_metrics, "region_metrics.csv")
 
-    # ── Step 6: LLM-as-a-Judge ────────────────────────────────────────────
+    #Step6: LLM as a judge
     judge_summary_rows = []
 
     if skip_judge:
@@ -191,7 +167,6 @@ def main(
     judge_summary = pd.DataFrame(judge_summary_rows)
     _save(judge_summary, "judge_summary.csv")
 
-    # ── Step 7: Full summary table ─────────────────────────────────────────
     full_summary = corpus_metrics.merge(judge_summary, on="condition", how="left")
     _save(full_summary, "full_summary.csv")
 
@@ -201,7 +176,6 @@ def main(
     print(full_summary.to_string(index=False))
     print("=" * 72 + "\n")
 
-    # ── Step 8: Generate poster figures ────────────────────────────────────
     logger.info("=== Generating poster figures ===")
     p1 = plot_wer_by_condition(full_summary)
     p2 = plot_region_heatmap(region_metrics)
@@ -213,9 +187,6 @@ def main(
         print(f"  {p}")
 
 
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="3-tier ICL evaluation on Betthupferl dialect benchmark."
